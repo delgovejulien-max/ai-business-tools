@@ -6,11 +6,11 @@ load_dotenv()
 # Configuration API - Support multiple modeles
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "ollama")  # "ollama" ou "anthropic"
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
-MODEL = os.getenv("MODEL", "gemma3:latest")
+MODEL = os.getenv("MODEL", "gemma:2b")
 
 # Configuration Ollama
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "gemma3:latest")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "gemma:2b")
 
 # Note: Validation du provider est faite au runtime quand le model est necessaire
 # Cela permet de charger le module pour les tests et verifications

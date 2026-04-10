@@ -1,0 +1,230 @@
+================================================================================
+                           PRET A DEMARRER!
+                    Gemma 3 + Ollama + LangGraph
+                         Solution 100% Open Source
+================================================================================
+
+STATUS: TOUT EST INSTALLE ET PRET
+
+  OK Ollama installé et vérifié
+  OK Gemma 3 téléchargé (3.3 GB)
+  OK Python avec LangGraph configuré
+  OK Dépendances Ollama installées
+  OK Code migré pour Ollama + Anthropic
+
+================================================================================
+3 ETAPES POUR DEMARRER
+================================================================================
+
+ETAPE 1: DEMARRER OLLAMA
+────────────────────────
+
+Option A - Commande directe (recommandé):
+  $ ollama serve
+
+Option B - Script Windows:
+  Double-cliquez: start_ollama.bat
+
+Option C - Script Mac/Linux:
+  $ bash start_ollama.sh
+
+Vous verrez:
+  127.0.0.1:11434
+  Loading model...
+
+LAISSER CE TERMINAL OUVERT!
+
+
+ETAPE 2: OUVRIR UN NOUVEAU TERMINAL
+────────────────────────────────────
+
+Dans un nouveau terminal:
+  $ cd mon-agent-langgraph
+  $ source venv/Scripts/activate
+
+
+ETAPE 3: LANCER L'AGENT
+───────────────────────
+
+  $ python main.py
+
+Vous verrez:
+  ============================================================
+  AGENT LANGGRAPH - OLLAMA
+  ============================================================
+  Provider: OLLAMA
+  Modele: gemma3:latest
+  URL: http://localhost:11434
+  ...
+  Vous:
+
+
+ETAPE 4: POSER UNE QUESTION!
+─────────────────────────────
+
+Vous: Quel est la météo à Paris?
+Agent: [Gemma 3 répond...]
+
+Vous: Calcule 12 * 5 + 100
+Agent: Le résultat est 160
+
+Vous: quit
+Agent au revoir!
+
+================================================================================
+COMMANDES RAPIDES
+================================================================================
+
+Vérifier Gemma 3:
+  $ ollama list
+
+Télécharger d'autres modèles:
+  $ ollama pull mistral:latest      # Plus rapide
+  $ ollama pull llama2:latest       # Bon équilibre
+  $ ollama pull tinyllama:latest    # Ultra rapide
+
+Tester directement Ollama:
+  $ ollama run gemma3:latest "Dis une blague"
+
+================================================================================
+CONFIGURATION (.env)
+================================================================================
+
+Actuel (par défaut - Gemma 3 gratuit):
+
+  LLM_PROVIDER=ollama
+  OLLAMA_BASE_URL=http://localhost:11434
+  OLLAMA_MODEL=gemma3:latest
+
+Pour passer à Claude (optionnel):
+
+  LLM_PROVIDER=anthropic
+  ANTHROPIC_API_KEY=sk-ant-v0-xxxxx...
+  MODEL=claude-3-5-sonnet-20241022
+
+Il suffit de changer LLM_PROVIDER et redémarrer!
+
+================================================================================
+PERFORMANCE ATTENDUE
+================================================================================
+
+Première réponse:  30-60 secondes
+Réponses suivantes: 10-30 secondes
+
+Avec GPU NVIDIA:
+  Première: 10-20 secondes
+  Suivantes: 5-15 secondes
+
+Avec GPU Apple Silicon:
+  Première: 5-10 secondes
+  Suivantes: 3-8 secondes
+
+C'est normal! Gemma 3 doit charger le modèle la première fois.
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+"Connection refused"
+  → Ollama n'est pas actif
+  → Solution: Assurez-vous que "ollama serve" est lancé
+
+"Model not found"
+  → Gemma 3 n'est pas trouvé
+  → Solution: ollama list (vérifier si apparaît)
+  → Sinon: ollama pull gemma3:latest
+
+"Module not found langchain_ollama"
+  → Dépendances non installées
+  → Solution: pip install -r requirements.txt
+
+"Response very slow"
+  → CPU sans GPU
+  → Solutions:
+     1. Utiliser modèle plus petit: ollama pull mistral
+     2. Installer GPU support (NVIDIA CUDA)
+     3. Ajouter plus de RAM (8+ GB recommandé)
+
+================================================================================
+FICHIERS IMPORTANTS
+================================================================================
+
+Point d'entrée:
+  main.py                    Lancer l'agent
+
+Configuration:
+  .env                       Paramètres (Ollama vs Anthropic)
+  config.py                  Logique du provider
+
+Code:
+  agents/agent.py            Graphe LangGraph
+  tools/weather.py           Outil météo
+  tools/calculator.py        Outil calcul
+
+Documentation:
+  OPENSOURCE_START_HERE.txt  Guide de démarrage
+  OPEN_SOURCE_SETUP.md       Guide complet Ollama
+  MIGRATION_GUIDE.md         Détails techniques
+
+Scripts:
+  start_ollama.bat           Windows
+  start_ollama.sh            Mac/Linux
+
+================================================================================
+VOTRE SETUP
+================================================================================
+
+Architecture:
+  Client (main.py)
+      ↓
+  LangGraph + OllamaLLM
+      ↓
+  Ollama Server (localhost:11434)
+      ↓
+  Gemma 3 Model (3.3 GB local)
+
+Avantages:
+  ✅ Gratuit (pas de coûts API)
+  ✅ Privé (données locales)
+  ✅ Hors-ligne (fonctionne sans internet)
+  ✅ Open source (code transparent)
+  ✅ Flexible (changer de modèle facilement)
+
+================================================================================
+PROCHAINES ETAPES
+================================================================================
+
+Immédiat:
+  1. ollama serve (Terminal 1)
+  2. python main.py (Terminal 2)
+  3. Poser des questions
+
+Aujourd'hui:
+  1. Tester avec différentes requêtes
+  2. Évaluer la performance
+  3. Ajouter vos propres outils si besoin
+
+Plus tard:
+  1. Déployer en production
+  2. Utiliser GPU pour accélérer
+  3. Intégrer dans vos applications
+
+================================================================================
+C'EST TOUT CE QU'IL Y A A FAIRE!
+================================================================================
+
+RECAP - 3 commandes:
+
+Terminal 1:
+  $ ollama serve
+
+Terminal 2:
+  $ cd mon-agent-langgraph
+  $ source venv/Scripts/activate
+  $ python main.py
+
+Puis posez une question et regardez la magie! 🎉
+
+================================================================================
+Solution 100% open source, gratuite et privée!
+================================================================================

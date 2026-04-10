@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Business Tools - Intelligence Artificielle pour Startups</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* Header Navigation */
+        header {
+            background: linear-gradient(135deg, #1f77b4 0%, #0d47a1 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        nav a:hover {
+            opacity: 0.8;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1f77b4 0%, #0d47a1 100%);
+            color: white;
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: #ff6b35;
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .cta-button:hover {
+            background: #ff5520;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .secondary-button {
+            display: inline-block;
+            background: transparent;
+            color: white;
+            padding: 1rem 2.5rem;
+            border: 2px solid white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-left: 1rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .secondary-button:hover {
+            background: white;
+            color: #1f77b4;
+        }
+
+        /* Features Section */
+        .features {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            border-radius: 12px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-color: #1f77b4;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            color: #1f77b4;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            color: #666;
+        }
+
+        /* Stats Section */
+        .stats {
+            background: #f8f9fa;
+            padding: 4rem 2rem;
+            margin: 2rem 0;
+        }
+
+        .stats-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat {
+            padding: 2rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1f77b4;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 2rem;
+        }
+
+        .pricing h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1f77b4;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .pricing-card {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .pricing-card.featured {
+            border-color: #1f77b4;
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(31, 119, 180, 0.3);
+        }
+
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #1f77b4;
+        }
+
+        .price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1f77b4;
+            margin: 1rem 0;
+        }
+
+        .price-period {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .features-list {
+            text-align: left;
+            margin: 2rem 0;
+            padding: 1rem 0;
+            border-top: 1px solid #e9ecef;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .features-list li {
+            list-style: none;
+            padding: 0.5rem 0;
+            color: #666;
+        }
+
+        .features-list li:before {
+            content: "✓ ";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        /* Tools Section */
+        .tools {
+            background: #f8f9fa;
+            padding: 4rem 2rem;
+            margin: 2rem 0;
+        }
+
+        .tools-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .tools h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1f77b4;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .tool-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #1f77b4;
+        }
+
+        .tool-item h4 {
+            color: #1f77b4;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-item p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #1f77b4 0%, #0d47a1 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            margin: 4rem 0 0 0;
+        }
+
+        .cta-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        /* Footer */
+        footer {
+            background: #222;
+            color: #ccc;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            nav ul {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+
+            .secondary-button {
+                display: block;
+                margin: 1rem 0 0 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">🚀 AI Business Tools</div>
+            <ul>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#tools">Tools</a></li>
+                <li><a href="#cta">Get Started</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>🤖 Intelligence Artificielle pour Votre Startup</h1>
+            <p>Stratégie, Marketing & Analytics - Analysé par des agents IA en minutes, pas en semaines</p>
+            <button class="cta-button" onclick="location.href='https://[YOUR_APP_URL].streamlit.app'">Essayer Gratuitement</button>
+            <button class="secondary-button" onclick="document.getElementById('pricing').scrollIntoView()">Voir Tarifs</button>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="feature-card">
+            <div class="feature-icon">🏢</div>
+            <h3>Consulting</h3>
+            <p>Analyse de marché, stratégie concurrentielle, modèles de pricing - tout en minutes</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">📢</div>
+            <h3>Marketing</h3>
+            <p>Plans de campagne, analyse d'audience, optimisation de budget - données en temps réel</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3>Analytics</h3>
+            <p>Prévisions de revenue, analyse de churn, dashboards KPI - rapports automatisés</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>Rapide</h3>
+            <p>Obtenez vos réponses en 30 secondes au lieu de 30 jours</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">💰</div>
+            <h3>Abordable</h3>
+            <p>À partir de gratuit. Pas de limite de temps, pas de contrats</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">🔒</div>
+            <h3>Sécurisé</h3>
+            <p>Vos données restent privées. Aucun partage tiers</p>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-content">
+            <div class="stat">
+                <div class="stat-number">18</div>
+                <div class="stat-label">Business Tools</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">99%</div>
+                <div class="stat-label">Accuracy</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">&lt;30s</div>
+                <div class="stat-label">Temps Réponse</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">∞</div>
+                <div class="stat-label">Scalable</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tools Section -->
+    <section id="tools" class="tools">
+        <div class="tools-content">
+            <h2>18 Outils Puissants</h2>
+            <div class="tools-grid">
+                <div class="tool-item">
+                    <h4>📊 Market Analysis</h4>
+                    <p>Analysez la taille du marché, la croissance et les opportunités</p>
+                </div>
+                <div class="tool-item">
+                    <h4>🎯 Competitive Analysis</h4>
+                    <p>Comprenez vos concurrents et votre positionnement</p>
+                </div>
+                <div class="tool-item">
+                    <h4>📋 Business Model Canvas</h4>
+                    <p>Créez un modèle d'affaires complet avec projections financières</p>
+                </div>
+                <div class="tool-item">
+                    <h4>🚀 Go-to-Market Strategy</h4>
+                    <p>Planifiez votre lancement avec budget et timeline</p>
+                </div>
+                <div class="tool-item">
+                    <h4>💵 Pricing Strategy</h4>
+                    <p>Développez des tiers de prix optimisés</p>
+                </div>
+                <div class="tool-item">
+                    <h4>💰 Funding Strategy</h4>
+                    <p>Planifiez votre levée de fonds</p>
+                </div>
+                <div class="tool-item">
+                    <h4>📢 Campaign Planning</h4>
+                    <p>Créez des campagnes marketing complètes</p>
+                </div>
+                <div class="tool-item">
+                    <h4>👥 Audience Analysis</h4>
+                    <p>Créez des personas détaillées de clients</p>
+                </div>
+                <div class="tool-item">
+                    <h4>💵 Budget Optimizer</h4>
+                    <p>Optimisez votre allocation marketing</p>
+                </div>
+                <div class="tool-item">
+                    <h4>📅 Content Calendar</h4>
+                    <p>Générez des calendriers de contenu</p>
+                </div>
+                <div class="tool-item">
+                    <h4>📱 Social Media Strategy</h4>
+                    <p>Planifiez votre stratégie sur chaque plateforme</p>
+                </div>
+                <div class="tool-item">
+                    <h4>📈 Revenue Forecast</h4>
+                    <p>Prévoyez votre revenue avec projections</p>
+                </div>
+                <div class="tool-item">
+                    <h4>😢 Churn Analysis</h4>
+                    <p>Analysez et réduisez votre churn client</p>
+                </div>
+                <div class="tool-item">
+                    <h4>📊 KPI Dashboard</h4>
+                    <p>Générez des dashboards complets</p>
+                </div>
+                <div class="tool-item">
+                    <h4>👥 Customer Segmentation</h4>
+                    <p>Segmentez vos clients par valeur</p>
+                </div>
+                <div class="tool-item">
+                    <h4>📋 Performance Report</h4>
+                    <p>Générés des rapports exécutifs</p>
+                </div>
+                <div class="tool-item">
+                    <h4>🔄 Conversion Optimization</h4>
+                    <p>Améliorez vos taux de conversion</p>
+                </div>
+                <div class="tool-item">
+                    <h4>🎯 Cohort Analysis</h4>
+                    <p>Analysez la rétention par cohortes</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing">
+        <h2>Tarifs Simples & Transparents</h2>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3>Gratuit</h3>
+                <div class="price">$0<span class="price-period">/mois</span></div>
+                <ul class="features-list">
+                    <li>5 outils/mois</li>
+                    <li>Interface complète</li>
+                    <li>Support communauté</li>
+                    <li>Parfait pour tester</li>
+                </ul>
+                <button class="cta-button">Commencer</button>
+            </div>
+
+            <div class="pricing-card featured">
+                <h3>Pro</h3>
+                <div class="price">$49<span class="price-period">/mois</span></div>
+                <ul class="features-list">
+                    <li>Outils illimités</li>
+                    <li>Toutes les features</li>
+                    <li>Export rapports</li>
+                    <li>Support email</li>
+                    <li>Prioritaire</li>
+                </ul>
+                <button class="cta-button">S'abonner</button>
+            </div>
+
+            <div class="pricing-card">
+                <h3>Business</h3>
+                <div class="price">$199<span class="price-period">/mois</span></div>
+                <ul class="features-list">
+                    <li>Tout en Pro</li>
+                    <li>Accès API</li>
+                    <li>White-label</li>
+                    <li>Support prioritaire</li>
+                    <li>SLA garantie</li>
+                </ul>
+                <button class="cta-button">Contacter</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="cta" class="cta-section">
+        <h2>Prêt à transformer votre startup? 🚀</h2>
+        <p>Rejoignez les startups qui utilisent l'IA pour gagner du temps et de l'argent</p>
+        <button class="cta-button" onclick="location.href='https://[YOUR_APP_URL].streamlit.app'" style="background: #ff6b35;">Essayer Gratuitement Maintenant</button>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#">Accueil</a>
+                <a href="#pricing">Tarifs</a>
+                <a href="#">Blog</a>
+                <a href="#">Contact</a>
+                <a href="#">Politique de Confidentialité</a>
+                <a href="#">Conditions</a>
+            </div>
+            <p>&copy; 2025 AI Business Tools. Tous droits réservés.</p>
+            <p>Propulsé par LangGraph & AI Agents 🤖</p>
+        </div>
+    </footer>
+
+    <script>
+        // Update buttons with your actual app URL
+        const appUrl = 'https://[YOUR_APP_URL].streamlit.app';
+        document.querySelectorAll('[onclick*="location.href"]').forEach(btn => {
+            btn.onclick = () => location.href = appUrl;
+        });
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

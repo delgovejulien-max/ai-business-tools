@@ -1,0 +1,152 @@
+================================================================================
+                              DEMARREZ ICI
+================================================================================
+
+Bienvenue! Votre projet LangGraph est COMPLETEMENT CONFIGURE.
+
+================================================================================
+ETAPE 1: CONFIGURER VOTRE CLE API (2 minutes)
+================================================================================
+
+1. Accedez a: https://console.anthropic.com/api_keys
+
+2. Copiez votre clé API
+
+3. Ouvrez le fichier ".env" du projet (avec Notepad ou votre editeur)
+
+4. Cherchez cette ligne:
+   ANTHROPIC_API_KEY=your_api_key_here
+
+5. Remplacez "your_api_key_here" par votre vraie clé:
+   ANTHROPIC_API_KEY=sk-ant-v0-xxxxxxxxxxxxxxxxxxxxx
+
+6. Sauvegardez le fichier
+
+================================================================================
+ETAPE 2: DEMARRER L'AGENT (3 secondes)
+================================================================================
+
+1. Ouvrez un terminal/PowerShell dans le dossier du projet
+
+2. Activez l'environnement:
+   source venv/Scripts/activate
+
+3. Lancez l'agent:
+   python main.py
+
+4. Posez une question:
+   Vous: Quel est la météo à Paris?
+   
+5. Quittez avec: quit
+
+================================================================================
+UTILISATION
+================================================================================
+
+Une fois l'agent lancé (python main.py), vous pouvez:
+
+- Demander la météo:
+  "Quel est la météo à Marseille?"
+  "Fais-moi la météo pour Paris, Lyon et Toulouse"
+
+- Faire des calculs:
+  "Calcule 12 * 5 + 100"
+  "Quel est le résultat de (50 + 25) * 2?"
+
+- Combiner les deux:
+  "Quel est la météo à Paris ET calcule 100 - 50"
+
+- Quitter:
+  "quit" ou "exit" ou Ctrl+C
+
+================================================================================
+FICHIERS IMPORTANTS
+================================================================================
+
+- main.py              -> Lance l'agent (c'est le fichier principal)
+- .env                 -> Votre configuration (clé API)
+- DEMARRAGE.md         -> Guide détaillé
+- README.md            -> Documentation complète
+- RESUME_SETUP.txt     -> Ce qu'on a fait
+- tools/               -> Les outils disponibles (météo, calcul)
+- agents/agent.py      -> Logique du graphe LangGraph
+
+================================================================================
+PHASES D'APPRENTISSAGE
+================================================================================
+
+Si vous voulez comprendre comment ça fonctionne:
+
+Phase 2 - Agent simple (pas de tools):
+  python agent_simple.py
+
+Phase 3 - Agent avec outils:
+  python agent_avec_outils.py
+
+Phase 4 - Architecture modulaire (RECOMMANDEE):
+  python main.py
+
+Tester les trois:
+  python test_phases.py
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+"ANTHROPIC_API_KEY not configured"
+-> Mettez a jour .env avec votre vraie clé
+
+"Module not found"
+-> Activez d'abord: source venv/Scripts/activate
+
+"Connection timeout"
+-> Vérifiez votre connexion internet
+
+"Erreur en important langchain"
+-> Réinstallez: pip install -r requirements.txt
+
+================================================================================
+AJOUTER UN OUTIL
+================================================================================
+
+Vous voudrez peut-être ajouter votre propre outil. Voici comment:
+
+1. Créez tools/mon_outil.py:
+
+   from langchain_core.tools import tool
+   
+   @tool
+   def mon_outil(param: str) -> str:
+       """Description de mon outil"""
+       return "résultat"
+
+2. Importez dans tools/__init__.py:
+
+   from .mon_outil import mon_outil
+
+3. Ajoutez dans agents/agent.py:
+
+   tools = [get_weather, calculate, mon_outil]
+
+C'est tout!
+
+================================================================================
+RESSOURCES
+================================================================================
+
+- LangGraph Docs:    https://langchain-ai.github.io/langgraph/
+- Claude API:        https://docs.anthropic.com/
+- LangChain Docs:    https://python.langchain.com/
+- Exemples:          Voir README.md et DEMARRAGE.md
+
+================================================================================
+RESUME: 3 ETAPES
+================================================================================
+
+1. Configurez .env avec votre clé API
+2. Lancez: python main.py
+3. Posez une question!
+
+C'est prêt!
+
+================================================================================

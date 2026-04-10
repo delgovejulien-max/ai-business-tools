@@ -1,0 +1,11 @@
+# Core LangGraph
+langgraph>=0.2.0
+langchain-core>=0.1.0
+python-dotenv>=1.0.0
+
+# Open source LLM support
+langchain-ollama>=0.1.0
+ollama>=0.1.0
+
+# Optional: pour support Anthropic si besoin
+langchain-anthropic>=1.0.0

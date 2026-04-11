@@ -38,6 +38,14 @@ from export_tools import (
     create_shareable_link_data
 )
 
+# Optional: Metrics tracking
+try:
+    from metrics_tracker import MetricsDatabase
+    metrics_db = MetricsDatabase()
+    METRICS_ENABLED = True
+except:
+    METRICS_ENABLED = False
+
 # Page config
 st.set_page_config(
     page_title="AI Business Tools - Your AI Co-Founder",
@@ -124,20 +132,80 @@ if 'user_data' not in st.session_state:
         'description': '',
         'plan': 'free',
         'usage_count': 0,
+        'tools_used_this_month': 0,  # Free limit: 1 tool/month
+        'free_tools_limit': 1,  # REVENUE DECISION: Limit free tier
         'onboarding_complete': False,
         'market_analysis_done': False,
         'strategy': {},
-        'tools_used': []
+        'tools_used': [],
+        'show_upgrade_prompt': False,
+        'signup_date': datetime.now().isoformat(),  # TRIGGER #4: Day 7 email
+        'last_visit': datetime.now().isoformat(),
     }
 
 if 'view_mode' not in st.session_state:
     st.session_state.view_mode = 'dashboard'  # 'onboarding', 'dashboard', 'tools'
 
+def check_free_tier_limit():
+    """Check if free user has hit tool limit"""
+    if st.session_state.user_data['plan'] == 'free':
+        if st.session_state.user_data['tools_used_this_month'] >= st.session_state.user_data['free_tools_limit']:
+            return True
+    return False
+
+def days_since_signup():
+    """Calculate days since user signed up (TRIGGER #4)"""
+    try:
+        signup = datetime.fromisoformat(st.session_state.user_data['signup_date'])
+        days = (datetime.now() - signup).days
+        return days
+    except:
+        return 0
+
+def should_show_day7_trigger():
+    """Show day 7 email reminder"""
+    if st.session_state.user_data['plan'] == 'free':
+        days = days_since_signup()
+        return days >= 7 and days <= 10  # Show for a few days
+    return False
+
+def log_conversion(source_trigger):
+    """Log conversion event for measurement"""
+    if METRICS_ENABLED:
+        try:
+            metrics_db.log_conversion(
+                user_id=st.session_state.user_data.get('company', 'unknown'),
+                conversion_source=source_trigger,
+                plan=st.session_state.user_data['plan'],
+                revenue=29  # PRO plan cost
+            )
+        except:
+            pass
+
 def invoke_tool(tool_func, params):
-    """Safely invoke a tool"""
+    """Safely invoke a tool with revenue checks"""
+    # Check free tier limit
+    if check_free_tier_limit():
+        st.markdown("""
+        <div style="padding: 1.5rem; background: linear-gradient(135deg, #ff6b35 0%, #1f77b4 100%); color: white; border-radius: 8px; margin: 1rem 0;">
+        <h3>You've Used Your Free Tool</h3>
+        <p>Your 1 free analysis per month is complete. Unlock unlimited tools with PRO.</p>
+        <p><strong>PRO Plan ($29/month)</strong></p>
+        <ul>
+        <li>Unlimited tool access</li>
+        <li>PDF, Excel, JSON exports</li>
+        <li>Shareable analysis links</li>
+        <li>Team collaboration (up to 3 people)</li>
+        <li>AI recommendations</li>
+        </ul>
+        </div>
+        """, unsafe_allow_html=True)
+        return None
+
     try:
         result = tool_func.invoke(params)
         st.session_state.user_data['usage_count'] += 1
+        st.session_state.user_data['tools_used_this_month'] += 1
         return result
     except Exception as e:
         st.error(f"Tool Error: {str(e)}")
@@ -221,12 +289,13 @@ def show_dashboard():
 
     with col2:
         plan_badge = st.session_state.user_data['plan'].upper()
-        st.markdown(f"### Plan: `{plan_badge}`")
+        badge_color = "#ff6b35" if plan_badge == "FREE" else "#1f77b4"
+        st.markdown(f"<span style='color: {badge_color};'>### Plan: {plan_badge}</span>", unsafe_allow_html=True)
 
     with col3:
         tools_used = st.session_state.user_data['usage_count']
-        free_limit = 5 if st.session_state.user_data['plan'] == 'free' else 999
-        st.markdown(f"### Tools: `{tools_used}/{free_limit}`")
+        free_limit = 1 if st.session_state.user_data['plan'] == 'free' else 999
+        st.markdown(f"### Tools This Month: `{tools_used}/{free_limit}`")
 
     st.divider()
 
@@ -260,6 +329,25 @@ def show_dashboard():
             inv_display = f"${inv:,.0f}M" if isinstance(inv, (int, float)) else str(inv)
             st.metric("Funding Needed", inv_display)
 
+    # UPGRADE TRIGGER #2: Team Invite (after strategy)
+    if st.session_state.user_data['plan'] == 'free' and st.session_state.user_data['market_analysis_done']:
+        st.markdown("""
+        <div style="padding: 1.5rem; background: #f0f2f6; border-left: 4px solid #ff6b35; border-radius: 8px; margin: 1.5rem 0;">
+        <h3>Invite Your Co-Founder</h3>
+        <p>Share this analysis with your team and review together.</p>
+        <p><strong>Unlock with PRO:</strong> Invite up to 3 co-founders, real-time collaboration, comments</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        col_team1, col_team2 = st.columns(2)
+        with col_team1:
+            if st.button("Upgrade to PRO (7-day free trial)", key="upgrade_team_trigger", type="primary"):
+                st.session_state.user_data['plan'] = 'pro'
+                st.session_state.user_data['tools_used_this_month'] = 0
+                log_conversion("team_invite_trigger")
+                st.success("PRO Trial activated! You can now invite co-founders.")
+                st.rerun()
+
     # Quick Actions
     st.markdown("## Next Steps")
     st.write("Complete your strategy in 5 minutes with these recommended tools:")
@@ -286,61 +374,89 @@ def show_dashboard():
 
     st.divider()
 
-    # Export & Share Actions
-    st.markdown("## Export Your Strategy")
-    st.write("Share your analysis with investors, team, or keep for your records:")
+    # UPGRADE TRIGGER #4: Day 7 Email (Reminder)
+    if should_show_day7_trigger():
+        st.markdown("""
+        <div style="padding: 1.5rem; background: #fef3c7; border-left: 4px solid #f59e0b; border-radius: 8px; margin-bottom: 1rem;">
+        <h3>Ready to Go Further?</h3>
+        <p>You've explored your market. Now it's time to build your complete strategy.</p>
+        <p><strong>PRO gives you:</strong> All tools, exports, team collaboration, and AI recommendations</p>
+        <p style="margin: 0; color: #666; font-size: 0.9rem;">Special offer: Try PRO free for 7 days, then $29/month</p>
+        </div>
+        """, unsafe_allow_html=True)
 
-    export_cols = st.columns(4)
+    # UPGRADE TRIGGER #1: Export Features
+    if st.session_state.user_data['plan'] == 'free':
+        st.markdown("""
+        <div style="padding: 1.5rem; background: linear-gradient(135deg, #1f77b4 0%, #ff6b35 100%); color: white; border-radius: 8px; margin-bottom: 1rem;">
+        <h3>Upgrade to PRO - $29/month</h3>
+        <p><strong>Get PDF, Excel, and share links for your strategy</strong></p>
+        <p>Share with investors, team, and co-founders. Export in any format.</p>
+        </div>
+        """, unsafe_allow_html=True)
 
-    with export_cols[0]:
-        if st.button("Export as PDF", key="export_pdf"):
-            html_report = create_html_report(
-                st.session_state.user_data.get('company', 'Strategy'),
-                st.session_state.user_data.get('description', ''),
-                st.session_state.user_data.get('name', ''),
-                st.session_state.user_data.get('strategy', {})
-            )
-            st.download_button(
-                label="Download PDF",
-                data=html_report,
-                file_name=f"{st.session_state.user_data.get('company', 'strategy')}_analysis.html",
-                mime="text/html"
-            )
+        if st.button("Start PRO Free Trial (7 days)", key="upgrade_export_trigger", type="primary"):
+            st.session_state.user_data['plan'] = 'pro'
+            st.session_state.user_data['tools_used_this_month'] = 0
+            log_conversion("export_feature_trigger")
+            st.success("PRO Trial activated! You now have access to all export features.")
+            st.rerun()
+    else:
+        # PRO/TEAM/ENTERPRISE - Show exports
+        st.markdown("## Export Your Strategy")
+        st.write("Share your analysis with investors, team, or keep for your records:")
 
-    with export_cols[1]:
-        if st.button("Export as JSON", key="export_json"):
-            json_data = export_strategy_to_json(
-                st.session_state.user_data.get('strategy', {}),
-                st.session_state.user_data.get('company', '')
-            )
-            st.download_button(
-                label="Download JSON",
-                data=json_data,
-                file_name=f"{st.session_state.user_data.get('company', 'strategy')}_analysis.json",
-                mime="application/json"
-            )
+        export_cols = st.columns(4)
 
-    with export_cols[2]:
-        if st.button("Export as CSV", key="export_csv"):
-            csv_data = export_strategy_to_csv(
-                st.session_state.user_data.get('strategy', {}),
-                st.session_state.user_data.get('company', '')
-            )
-            st.download_button(
-                label="Download CSV",
-                data=csv_data,
-                file_name=f"{st.session_state.user_data.get('company', 'strategy')}_analysis.csv",
-                mime="text/csv"
-            )
+        with export_cols[0]:
+            if st.button("Export as PDF", key="export_pdf"):
+                html_report = create_html_report(
+                    st.session_state.user_data.get('company', 'Strategy'),
+                    st.session_state.user_data.get('description', ''),
+                    st.session_state.user_data.get('name', ''),
+                    st.session_state.user_data.get('strategy', {})
+                )
+                st.download_button(
+                    label="Download PDF",
+                    data=html_report,
+                    file_name=f"{st.session_state.user_data.get('company', 'strategy')}_analysis.html",
+                    mime="text/html"
+                )
 
-    with export_cols[3]:
-        if st.button("Get Share Link", key="share_link"):
-            share_data = create_shareable_link_data(
-                st.session_state.user_data.get('company', ''),
-                st.session_state.user_data.get('strategy', {})
-            )
-            st.success(f"Share ID: `{share_data['share_id']}`")
-            st.write("Share this ID with others to show your analysis")
+        with export_cols[1]:
+            if st.button("Export as JSON", key="export_json"):
+                json_data = export_strategy_to_json(
+                    st.session_state.user_data.get('strategy', {}),
+                    st.session_state.user_data.get('company', '')
+                )
+                st.download_button(
+                    label="Download JSON",
+                    data=json_data,
+                    file_name=f"{st.session_state.user_data.get('company', 'strategy')}_analysis.json",
+                    mime="application/json"
+                )
+
+        with export_cols[2]:
+            if st.button("Export as CSV", key="export_csv"):
+                csv_data = export_strategy_to_csv(
+                    st.session_state.user_data.get('strategy', {}),
+                    st.session_state.user_data.get('company', '')
+                )
+                st.download_button(
+                    label="Download CSV",
+                    data=csv_data,
+                    file_name=f"{st.session_state.user_data.get('company', 'strategy')}_analysis.csv",
+                    mime="text/csv"
+                )
+
+        with export_cols[3]:
+            if st.button("Get Share Link", key="share_link"):
+                share_data = create_shareable_link_data(
+                    st.session_state.user_data.get('company', ''),
+                    st.session_state.user_data.get('strategy', {})
+                )
+                st.success(f"Share ID: `{share_data['share_id']}`")
+                st.write("Share this ID with others to show your analysis")
 
     st.divider()
 
@@ -771,11 +887,29 @@ with st.sidebar:
 
         st.divider()
 
+        # EXPANSION REVENUE: PRO to TEAM upgrade
+        if st.session_state.user_data['plan'] == 'pro':
+            st.markdown("### Upgrade to TEAM")
+            st.write("Invite your whole team and collaborate in real-time.")
+            st.markdown("- 10 team members")
+            st.markdown("- Real-time collaboration")
+            st.markdown("- **$99/month**")
+            if st.button("Learn about TEAM Plan", key="team_expansion"):
+                st.info("TEAM plan coming soon! Invite up to 10 team members, real-time collaboration, and team dashboards.")
+
         if st.button("Reset & Start Over"):
             st.session_state.user_data['onboarding_complete'] = False
             st.session_state.user_data['market_analysis_done'] = False
             st.session_state.view_mode = 'onboarding'
             st.rerun()
+
+    st.divider()
+
+    st.markdown("### Pricing")
+    st.markdown("**FREE** - 1 tool/month")
+    st.markdown("**PRO** - $29/month (unlimited tools)")
+    st.markdown("**TEAM** - $99/month (10 people)")
+    st.markdown("**ENTERPRISE** - Custom pricing")
 
     st.divider()
 
